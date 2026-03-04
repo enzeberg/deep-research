@@ -6,7 +6,7 @@ Workflow: plan → research (agent) → report
 from typing import Any
 import logging
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import HumanMessage
 
 from src.workflows.states import ResearchState
@@ -59,7 +59,7 @@ class ResearchWorkflow:
         workflow.add_node("research", self._research_node)
         workflow.add_node("report", self._report_node)
 
-        workflow.set_entry_point("plan")
+        workflow.add_edge(START, "plan")
         workflow.add_edge("plan", "research")
         workflow.add_edge("research", "report")
         workflow.add_edge("report", END)

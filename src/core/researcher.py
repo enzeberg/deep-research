@@ -2,7 +2,7 @@
 
 from langchain_core.language_models import BaseChatModel
 from langchain_core.tools import BaseTool
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 from src.tools.web_search import web_search, get_search_urls
 from src.tools.content_fetch import fetch_webpage
@@ -58,22 +58,24 @@ def create_research_agent(
 ):
     """Create a research agent with tool-calling capabilities.
 
-    This creates a real ReAct agent that autonomously decides which tools to
-    call, when to call them, and when it has gathered enough information.
+    Uses LangChain v1 create_agent (replaces the deprecated
+    langgraph.prebuilt.create_react_agent). The agent autonomously decides
+    which tools to call, when to call them, and when it has gathered enough
+    information.
 
     Args:
         llm: The language model to use.
         tools: Custom tools list. If None, uses default web tools.
 
     Returns:
-        A compiled LangGraph ReAct agent.
+        A compiled agent built on LangGraph.
     """
     tools = tools or get_default_tools()
 
-    agent = create_react_agent(
+    agent = create_agent(
         model=llm,
         tools=tools,
-        prompt=RESEARCHER_SYSTEM_PROMPT,
+        system_prompt=RESEARCHER_SYSTEM_PROMPT,
     )
 
     return agent
